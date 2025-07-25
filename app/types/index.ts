@@ -17,6 +17,7 @@ export interface Sale {
   unitPrice: number;
   totalPrice: number;
   date: string;
+  timestamp?: number;
   customerName?: string;
 }
 
@@ -26,6 +27,7 @@ export interface Expense {
   amount: number;
   category: string;
   date: string;
+  timestamp?: number;
   description?: string;
 }
 

@@ -55,6 +55,7 @@ export default function SalesManager({
           unitPrice: product.sellingPrice,
           totalPrice: product.sellingPrice * parseInt(newSale.quantity),
           date: selectedDate,
+          timestamp: Date.now(),
           customerName: newSale.customerName || undefined,
         };
 
@@ -132,7 +133,7 @@ export default function SalesManager({
             type="date"
             value={selectedDate}
             onChange={(e) => setSelectedDate(e.target.value)}
-            className="w-full sm:w-40 px-3 sm:px-4 py-2 sm:py-3 border-2 border-gray-200 rounded-2xl focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all duration-200 text-sm sm:text-base"
+            className="w-full sm:w-40 px-3 sm:px-4 py-2 sm:py-3 border-2 border-gray-200 rounded-2xl focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all duration-200 text-sm sm:text-base shadow-sm hover:shadow-md"
           />
           <Button
             onClick={() => setIsOpen(true)}
@@ -160,7 +161,7 @@ export default function SalesManager({
       </div>
 
       {/* Stats Section */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 mb-6">
         <StatCard
           icon={
             <svg
@@ -247,7 +248,7 @@ export default function SalesManager({
           borderColor="green-100"
         />
       ) : (
-        <Card className="bg-white/50 backdrop-blur-sm border border-white/20 shadow-lg">
+        <Card className="bg-white/80 backdrop-blur-sm border border-white/30 shadow-lg hover:shadow-xl transition-shadow duration-200">
           <CardBody className="p-0">
             <div className="overflow-x-auto">
               <Table
@@ -310,10 +311,15 @@ export default function SalesManager({
                       </TableCell>
                       <TableCell className="hidden sm:table-cell">
                         <span className="text-sm text-gray-600">
-                          {new Date(sale.id).toLocaleTimeString("es-ES", {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}
+                          {sale.timestamp
+                            ? new Date(sale.timestamp).toLocaleTimeString(
+                                "es-ES",
+                                {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                }
+                              )
+                            : "N/A"}
                         </span>
                       </TableCell>
                     </TableRow>
@@ -369,23 +375,45 @@ export default function SalesManager({
         }
       >
         <div className="space-y-4">
-          <Select
-            label="Producto"
-            placeholder="Selecciona un producto"
-            value={newSale.productId}
-            onChange={(e) =>
-              setNewSale({ ...newSale, productId: e.target.value })
-            }
-          >
-            {products
-              .filter((product) => product.stock > 0)
-              .map((product) => (
-                <SelectItem key={product.id} value={product.id}>
-                  {product.name} - Stock: {product.stock} -{" "}
-                  {StorageService.formatCurrency(product.sellingPrice)}
-                </SelectItem>
-              ))}
-          </Select>
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2 sm:mb-3">
+              Producto <span className="text-red-500">*</span>
+            </label>
+            <div className="relative">
+              <select
+                value={newSale.productId}
+                onChange={(e) =>
+                  setNewSale({ ...newSale, productId: e.target.value })
+                }
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 border-2 border-gray-200 rounded-2xl focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 text-base sm:text-lg appearance-none bg-white"
+              >
+                <option value="">Selecciona un producto</option>
+                {products
+                  .filter((product) => product.stock > 0)
+                  .map((product) => (
+                    <option key={product.id} value={product.id}>
+                      {product.name} - Stock: {product.stock} -{" "}
+                      {StorageService.formatCurrency(product.sellingPrice)}
+                    </option>
+                  ))}
+              </select>
+              <div className="absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                <svg
+                  className="w-5 h-5 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
 
           <FormInput
             label="Cantidad"
