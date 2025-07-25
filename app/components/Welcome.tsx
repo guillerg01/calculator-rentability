@@ -1,0 +1,353 @@
+"use client";
+
+import { useState } from "react";
+import { Card, CardBody, Button, useDisclosure } from "@nextui-org/react";
+import { Business } from "../types";
+import { StorageService } from "../services/storage";
+
+interface WelcomeProps {
+  onBusinessCreated: (business: Business) => void;
+}
+
+export default function Welcome({ onBusinessCreated }: WelcomeProps) {
+  console.log("Welcome component rendered");
+  const [newBusiness, setNewBusiness] = useState({ name: "", description: "" });
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const handleOpenModal = () => {
+    console.log("handleOpenModal called");
+    onOpen();
+  };
+
+  const handleCreateBusiness = () => {
+    console.log("handleCreateBusiness called", newBusiness);
+    if (newBusiness.name.trim()) {
+      const business: Business = {
+        id: StorageService.generateId(),
+        name: newBusiness.name,
+        description: newBusiness.description,
+        createdAt: new Date().toISOString(),
+        products: [],
+        sales: [],
+        expenses: [],
+      };
+
+      console.log("Creating business:", business);
+      StorageService.addBusiness(business);
+      setNewBusiness({ name: "", description: "" });
+      onClose();
+      onBusinessCreated(business);
+      StorageService.setCurrentBusinessId(business.id);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+      <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%239C92AC%22%20fill-opacity%3D%220.05%22%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2230%22%20r%3D%222%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-40"></div>
+
+      <div className="relative z-10 flex items-center justify-center min-h-screen px-4">
+        <div className="w-full max-w-6xl">
+          {/* Hero Section */}
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl shadow-2xl mb-8">
+              <svg
+                className="w-10 h-10 text-white"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z" />
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+            <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-purple-800 bg-clip-text text-transparent mb-6">
+              Calculadora de Rentabilidad
+            </h1>
+            <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+              Transforma tu negocio con análisis inteligente de rentabilidad,
+              gestión de productos y control financiero avanzado
+            </p>
+          </div>
+
+          {/* Features Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+            <div className="group">
+              <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-white/20 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <svg
+                    className="w-8 h-8 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+                    />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-bold text-gray-800 mb-3">
+                  Gestión de Productos
+                </h3>
+                <p className="text-gray-600 leading-relaxed">
+                  Controla inventario, precios de compra y venta, categorías y
+                  alertas de stock bajo con precisión
+                </p>
+              </div>
+            </div>
+
+            <div className="group">
+              <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-white/20 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+                <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <svg
+                    className="w-8 h-8 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"
+                    />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-bold text-gray-800 mb-3">
+                  Control de Ventas
+                </h3>
+                <p className="text-gray-600 leading-relaxed">
+                  Registra ventas diarias, gestiona clientes y obtén insights en
+                  tiempo real sobre tu rendimiento
+                </p>
+              </div>
+            </div>
+
+            <div className="group">
+              <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-white/20 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+                <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <svg
+                    className="w-8 h-8 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                    />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-bold text-gray-800 mb-3">
+                  Análisis Avanzado
+                </h3>
+                <p className="text-gray-600 leading-relaxed">
+                  Visualiza estadísticas, gráficos interactivos y métricas de
+                  rentabilidad para tomar decisiones informadas
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* CTA Section */}
+          <div className="text-center">
+            <button
+              onClick={handleOpenModal}
+              className="bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold px-8 py-6 text-lg rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 flex items-center justify-center mx-auto focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+            >
+              <svg
+                className="w-6 h-6 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                />
+              </svg>
+              Crear Mi Primer Negocio
+            </button>
+
+            <p className="text-gray-500 mt-6 text-lg">
+              Comienza tu viaje hacia el éxito empresarial en menos de 2 minutos
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Custom Modal */}
+      {isOpen && (
+        <div className="modal-overlay bg-black/60 backdrop-blur-sm p-2 sm:p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-[95vw] max-w-lg mx-2 sm:mx-4 transform transition-all duration-300 scale-100 max-h-[90vh] overflow-y-auto">
+            {/* Header */}
+            <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-t-2xl p-4 sm:p-6 text-white">
+              <div className="flex justify-between items-center">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-white/20 rounded-xl flex items-center justify-center">
+                    <svg
+                      className="w-6 h-6"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                      />
+                    </svg>
+                  </div>
+                  <div>
+                    <h2 className="text-lg sm:text-xl font-bold">
+                      Crear Nuevo Negocio
+                    </h2>
+                    <p className="text-blue-100 text-xs sm:text-sm">
+                      Comienza tu viaje empresarial
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={onClose}
+                  className="w-6 h-6 sm:w-8 sm:h-8 bg-white/20 rounded-2xl flex items-center justify-center hover:bg-white/30 transition-colors focus:outline-none focus:ring-2 focus:ring-white/30"
+                >
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            {/* Body */}
+            <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-3">
+                  Nombre del Negocio
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="Ej: Mi Tienda Online"
+                    value={newBusiness.name}
+                    onChange={(e) =>
+                      setNewBusiness({ ...newBusiness, name: e.target.value })
+                    }
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-2xl focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 text-lg"
+                  />
+                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                    <svg
+                      className="w-5 h-5 text-gray-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-3">
+                  Descripción (Opcional)
+                </label>
+                <textarea
+                  placeholder="Describe tu negocio, productos principales, mercado objetivo..."
+                  value={newBusiness.description}
+                  onChange={(e) =>
+                    setNewBusiness({
+                      ...newBusiness,
+                      description: e.target.value,
+                    })
+                  }
+                  rows={4}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-2xl focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 resize-none"
+                />
+              </div>
+
+              {/* Preview */}
+              {newBusiness.name && (
+                <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-4 border border-blue-100">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+                      <span className="text-white font-bold text-lg">
+                        {newBusiness.name.charAt(0).toUpperCase()}
+                      </span>
+                    </div>
+                    <div>
+                      <p className="font-semibold text-gray-800">
+                        {newBusiness.name}
+                      </p>
+                      {newBusiness.description && (
+                        <p className="text-sm text-gray-600">
+                          {newBusiness.description}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Footer */}
+            <div className="bg-gray-50 rounded-b-2xl p-4 sm:p-6 border-t border-gray-100">
+              <div className="flex justify-end gap-3">
+                <button
+                  onClick={onClose}
+                  className="px-6 py-3 text-gray-600 hover:text-gray-800 font-medium rounded-2xl hover:bg-gray-100 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-200"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={handleCreateBusiness}
+                  disabled={!newBusiness.name.trim()}
+                  className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-2xl hover:from-blue-700 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+                >
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                  Crear Negocio
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
