@@ -38,15 +38,15 @@ export default function FormInput({
           value={value}
           onChange={onChange}
           disabled={disabled}
-                                className={`w-full px-4 py-3 border-2 border-gray-200 rounded-2xl focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 text-lg ${
-            iconPosition === "left" ? "pl-10" : "pr-10"
+          className={`w-full px-4 py-3 border-2 border-gray-200 rounded-2xl focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 text-lg ${
+            iconPosition === "left" ? "pl-12" : "pr-12"
           } ${disabled ? "bg-gray-100 cursor-not-allowed" : ""}`}
         />
         {icon && (
           <div
             className={`absolute ${
-              iconPosition === "left" ? "left-3" : "right-3"
-            } top-1/2 transform -translate-y-1/2`}
+              iconPosition === "left" ? "left-4" : "right-4"
+            } top-1/2 transform -translate-y-1/2 pointer-events-none z-10 flex items-center justify-center`}
           >
             {icon}
           </div>

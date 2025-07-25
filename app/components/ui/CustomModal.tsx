@@ -33,9 +33,13 @@ export default function CustomModal({
   if (!isOpen || !mounted) return null;
 
   const modalContent = (
-    <div className="fixed inset-0 z-50 flex items-center justify-center modal-overlay bg-black/60 backdrop-blur-sm p-2 sm:p-4">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center modal-overlay bg-black/60 backdrop-blur-sm p-2 sm:p-4"
+      onClick={onClose}
+    >
       <div
         className={`bg-white rounded-2xl shadow-2xl w-full max-w-[95vw] ${maxWidth} mx-2 sm:mx-4 transform transition-all duration-300 scale-100 max-h-[90vh] overflow-y-auto`}
+        onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-t-2xl p-4 sm:p-6 text-white">

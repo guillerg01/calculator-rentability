@@ -43,3 +43,21 @@ select:focus {
   position: relative !important;
 }
 
+/* Ensure form inputs in modals display correctly */
+.modal-overlay .relative {
+  position: relative !important;
+}
+
+.modal-overlay .absolute {
+  position: absolute !important;
+}
+
+/* Ensure icons are visible in form inputs */
+.modal-overlay input[type="text"],
+.modal-overlay input[type="number"],
+.modal-overlay input[type="email"],
+.modal-overlay input[type="password"] {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
