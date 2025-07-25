@@ -11,8 +11,6 @@ import {
   TableRow,
   TableCell,
   Chip,
-  Select,
-  SelectItem,
 } from "@nextui-org/react";
 import { Product, Sale } from "../../../types";
 import { StorageService } from "../../../services/storage";
@@ -120,22 +118,25 @@ export default function SalesManager({
   return (
     <div className="w-full">
       {/* Header Section */}
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
         <div>
-          <h3 className="text-2xl font-bold text-gray-800">Ventas</h3>
-          <p className="text-gray-600 mt-1">
+          <h3 className="text-xl sm:text-2xl font-bold text-gray-800">
+            Ventas
+          </h3>
+          <p className="text-sm sm:text-base text-gray-600 mt-1">
             Gestiona las ventas y transacciones
           </p>
         </div>
-        <div className="flex gap-3 items-center">
+        <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center w-full sm:w-auto">
           <input
             type="date"
             value={selectedDate}
             onChange={(e) => setSelectedDate(e.target.value)}
-            className="w-40 px-4 py-3 border-2 border-gray-200 rounded-2xl focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all duration-200"
+            className="w-full sm:w-40 px-3 sm:px-4 py-2 sm:py-3 border-2 border-gray-200 rounded-2xl focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all duration-200 text-sm sm:text-base"
           />
           <Button
             onClick={() => setIsOpen(true)}
+            className="w-full sm:w-auto"
             startContent={
               <svg
                 className="w-4 h-4"
@@ -152,7 +153,8 @@ export default function SalesManager({
               </svg>
             }
           >
-            Registrar Venta
+            <span className="hidden sm:inline">Registrar Venta</span>
+            <span className="sm:hidden">Registrar</span>
           </Button>
         </div>
       </div>
@@ -247,64 +249,78 @@ export default function SalesManager({
       ) : (
         <Card className="bg-white/50 backdrop-blur-sm border border-white/20 shadow-lg">
           <CardBody className="p-0">
-            <Table
-              aria-label="Sales table"
-              classNames={{
-                wrapper: "shadow-none",
-                th: "bg-gray-50/80 text-gray-700 font-semibold border-b border-gray-200 focus:outline-none",
-                td: "border-b border-gray-100 focus:outline-none",
-              }}
-            >
-              <TableHeader>
-                <TableColumn>Producto</TableColumn>
-                <TableColumn>Cantidad</TableColumn>
-                <TableColumn>Precio Unitario</TableColumn>
-                <TableColumn>Total</TableColumn>
-                <TableColumn>Cliente</TableColumn>
-                <TableColumn>Hora</TableColumn>
-              </TableHeader>
-              <TableBody>
-                {getDailySales().map((sale) => (
-                  <TableRow key={sale.id} className="hover:bg-gray-50/50">
-                    <TableCell>
-                      <p className="font-semibold text-gray-800">
-                        {sale.productName}
-                      </p>
-                    </TableCell>
-                    <TableCell>
-                      <Chip color="primary" variant="flat" size="sm">
-                        {sale.quantity}
-                      </Chip>
-                    </TableCell>
-                    <TableCell>
-                      <span className="font-medium text-gray-700">
-                        {StorageService.formatCurrency(sale.unitPrice)}
-                      </span>
-                    </TableCell>
-                    <TableCell>
-                      <p className="font-semibold text-green-600">
-                        {StorageService.formatCurrency(sale.totalPrice)}
-                      </p>
-                    </TableCell>
-                    <TableCell>
-                      {sale.customerName || (
-                        <span className="text-gray-400 text-sm">
-                          Sin cliente
+            <div className="overflow-x-auto">
+              <Table
+                aria-label="Sales table"
+                classNames={{
+                  wrapper: "shadow-none min-w-full",
+                  th: "bg-gray-50/80 text-gray-700 font-semibold border-b border-gray-200 focus:outline-none text-xs sm:text-sm",
+                  td: "border-b border-gray-100 focus:outline-none text-xs sm:text-sm",
+                }}
+              >
+                <TableHeader>
+                  <TableColumn className="text-xs sm:text-sm">
+                    Producto
+                  </TableColumn>
+                  <TableColumn className="text-xs sm:text-sm">
+                    Cantidad
+                  </TableColumn>
+                  <TableColumn className="text-xs sm:text-sm hidden md:table-cell">
+                    Precio Unitario
+                  </TableColumn>
+                  <TableColumn className="text-xs sm:text-sm">
+                    Total
+                  </TableColumn>
+                  <TableColumn className="text-xs sm:text-sm hidden lg:table-cell">
+                    Cliente
+                  </TableColumn>
+                  <TableColumn className="text-xs sm:text-sm hidden sm:table-cell">
+                    Hora
+                  </TableColumn>
+                </TableHeader>
+                <TableBody>
+                  {getDailySales().map((sale) => (
+                    <TableRow key={sale.id} className="hover:bg-gray-50/50">
+                      <TableCell>
+                        <p className="font-semibold text-gray-800">
+                          {sale.productName}
+                        </p>
+                      </TableCell>
+                      <TableCell>
+                        <Chip color="primary" variant="flat" size="sm">
+                          {sale.quantity}
+                        </Chip>
+                      </TableCell>
+                      <TableCell className="hidden md:table-cell">
+                        <span className="font-medium text-gray-700">
+                          {StorageService.formatCurrency(sale.unitPrice)}
                         </span>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      <span className="text-sm text-gray-600">
-                        {new Date(sale.id).toLocaleTimeString("es-ES", {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                      </span>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                      </TableCell>
+                      <TableCell>
+                        <p className="font-semibold text-green-600">
+                          {StorageService.formatCurrency(sale.totalPrice)}
+                        </p>
+                      </TableCell>
+                      <TableCell className="hidden lg:table-cell">
+                        {sale.customerName || (
+                          <span className="text-gray-400 text-sm">
+                            Sin cliente
+                          </span>
+                        )}
+                      </TableCell>
+                      <TableCell className="hidden sm:table-cell">
+                        <span className="text-sm text-gray-600">
+                          {new Date(sale.id).toLocaleTimeString("es-ES", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </span>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           </CardBody>
         </Card>
       )}
@@ -318,13 +334,18 @@ export default function SalesManager({
         icon={salesIcon}
         maxWidth="max-w-2xl"
         footer={
-          <div className="flex justify-end gap-3">
-            <Button variant="secondary" onClick={() => setIsOpen(false)}>
+          <div className="flex flex-col sm:flex-row justify-end gap-3">
+            <Button
+              variant="secondary"
+              onClick={() => setIsOpen(false)}
+              className="w-full sm:w-auto"
+            >
               Cancelar
             </Button>
             <Button
               onClick={handleAddSale}
               disabled={!newSale.productId || !newSale.quantity}
+              className="w-full sm:w-auto"
               startContent={
                 <svg
                   className="w-5 h-5"
@@ -341,7 +362,8 @@ export default function SalesManager({
                 </svg>
               }
             >
-              Registrar Venta
+              <span className="hidden sm:inline">Registrar Venta</span>
+              <span className="sm:hidden">Registrar</span>
             </Button>
           </div>
         }
@@ -388,6 +410,7 @@ export default function SalesManager({
                 />
               </svg>
             }
+            iconPosition="left"
             required
           />
 
@@ -413,6 +436,7 @@ export default function SalesManager({
                 />
               </svg>
             }
+            iconPosition="left"
           />
 
           {newSale.productId && newSale.quantity && (

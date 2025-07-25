@@ -125,15 +125,18 @@ export default function ProductManager({
   return (
     <div className="w-full">
       {/* Header Section */}
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
         <div>
-          <h3 className="text-2xl font-bold text-gray-800">Productos</h3>
-          <p className="text-gray-600 mt-1">
+          <h3 className="text-xl sm:text-2xl font-bold text-gray-800">
+            Productos
+          </h3>
+          <p className="text-sm sm:text-base text-gray-600 mt-1">
             Gestiona tu inventario y productos
           </p>
         </div>
         <Button
           onClick={() => setIsOpen(true)}
+          className="w-full sm:w-auto"
           startContent={
             <svg
               className="w-4 h-4"
@@ -150,7 +153,8 @@ export default function ProductManager({
             </svg>
           }
         >
-          Agregar Producto
+          <span className="hidden sm:inline">Agregar Producto</span>
+          <span className="sm:hidden">Agregar</span>
         </Button>
       </div>
 
@@ -169,112 +173,135 @@ export default function ProductManager({
       ) : (
         <Card className="bg-white/50 backdrop-blur-sm border border-white/20 shadow-lg">
           <CardBody className="p-0">
-            <Table
-              aria-label="Products table"
-              classNames={{
-                wrapper: "shadow-none",
-                th: "bg-gray-50/80 text-gray-700 font-semibold border-b border-gray-200 focus:outline-none",
-                td: "border-b border-gray-100 focus:outline-none",
-              }}
-            >
-              <TableHeader>
-                <TableColumn>Producto</TableColumn>
-                <TableColumn>Precio Compra</TableColumn>
-                <TableColumn>Precio Venta</TableColumn>
-                <TableColumn>Margen</TableColumn>
-                <TableColumn>Stock</TableColumn>
-                <TableColumn>Categoría</TableColumn>
-                <TableColumn>Acciones</TableColumn>
-              </TableHeader>
-              <TableBody>
-                {products.map((product) => {
-                  const profitMargin = getProfitMargin(
-                    product.purchasePrice,
-                    product.sellingPrice
-                  );
-                  const stockStatus = getStockStatus(
-                    product.stock,
-                    product.minStock
-                  );
+            <div className="overflow-x-auto">
+              <Table
+                aria-label="Products table"
+                classNames={{
+                  wrapper: "shadow-none min-w-full",
+                  th: "bg-gray-50/80 text-gray-700 font-semibold border-b border-gray-200 focus:outline-none text-xs sm:text-sm",
+                  td: "border-b border-gray-100 focus:outline-none text-xs sm:text-sm",
+                }}
+              >
+                <TableHeader>
+                  <TableColumn className="text-xs sm:text-sm">
+                    Producto
+                  </TableColumn>
+                  <TableColumn className="text-xs sm:text-sm hidden md:table-cell">
+                    Precio Compra
+                  </TableColumn>
+                  <TableColumn className="text-xs sm:text-sm">
+                    Precio Venta
+                  </TableColumn>
+                  <TableColumn className="text-xs sm:text-sm hidden sm:table-cell">
+                    Margen
+                  </TableColumn>
+                  <TableColumn className="text-xs sm:text-sm">
+                    Stock
+                  </TableColumn>
+                  <TableColumn className="text-xs sm:text-sm hidden lg:table-cell">
+                    Categoría
+                  </TableColumn>
+                  <TableColumn className="text-xs sm:text-sm">
+                    Acciones
+                  </TableColumn>
+                </TableHeader>
+                <TableBody>
+                  {products.map((product) => {
+                    const profitMargin = getProfitMargin(
+                      product.purchasePrice,
+                      product.sellingPrice
+                    );
+                    const stockStatus = getStockStatus(
+                      product.stock,
+                      product.minStock
+                    );
 
-                  return (
-                    <TableRow key={product.id} className="hover:bg-gray-50/50">
-                      <TableCell>
-                        <div>
-                          <p className="font-semibold text-gray-800">
-                            {product.name}
-                          </p>
-                          {product.description && (
-                            <p className="text-sm text-gray-500 mt-1">
-                              {product.description}
+                    return (
+                      <TableRow
+                        key={product.id}
+                        className="hover:bg-gray-50/50"
+                      >
+                        <TableCell>
+                          <div>
+                            <p className="font-semibold text-gray-800">
+                              {product.name}
                             </p>
-                          )}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <span className="font-medium text-gray-700">
-                          {StorageService.formatCurrency(product.purchasePrice)}
-                        </span>
-                      </TableCell>
-                      <TableCell>
-                        <span className="font-medium text-gray-700">
-                          {StorageService.formatCurrency(product.sellingPrice)}
-                        </span>
-                      </TableCell>
-                      <TableCell>
-                        <Chip
-                          color={
-                            profitMargin > 20
-                              ? "success"
-                              : profitMargin > 10
-                              ? "warning"
-                              : "danger"
-                          }
-                          variant="flat"
-                          className="font-medium"
-                        >
-                          {profitMargin.toFixed(1)}%
-                        </Chip>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
+                            {product.description && (
+                              <p className="text-sm text-gray-500 mt-1">
+                                {product.description}
+                              </p>
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell className="hidden md:table-cell">
                           <span className="font-medium text-gray-700">
-                            {product.stock}
+                            {StorageService.formatCurrency(
+                              product.purchasePrice
+                            )}
                           </span>
-                          <Badge
+                        </TableCell>
+                        <TableCell>
+                          <span className="font-medium text-gray-700">
+                            {StorageService.formatCurrency(
+                              product.sellingPrice
+                            )}
+                          </span>
+                        </TableCell>
+                        <TableCell className="hidden sm:table-cell">
+                          <Chip
                             color={
-                              stockStatus.color as
-                                | "success"
-                                | "warning"
-                                | "danger"
+                              profitMargin > 20
+                                ? "success"
+                                : profitMargin > 10
+                                ? "warning"
+                                : "danger"
                             }
                             variant="flat"
-                            size="sm"
+                            className="font-medium"
                           >
-                            {stockStatus.text}
-                          </Badge>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Chip variant="flat" color="primary" size="sm">
-                          {product.category}
-                        </Chip>
-                      </TableCell>
-                      <TableCell>
-                        <Button
-                          size="sm"
-                          variant="danger"
-                          onClick={() => handleDeleteProduct(product.id)}
-                          className="text-xs"
-                        >
-                          Eliminar
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
+                            {profitMargin.toFixed(1)}%
+                          </Chip>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium text-gray-700">
+                              {product.stock}
+                            </span>
+                            <Badge
+                              color={
+                                stockStatus.color as
+                                  | "success"
+                                  | "warning"
+                                  | "danger"
+                              }
+                              variant="flat"
+                              size="sm"
+                            >
+                              {stockStatus.text}
+                            </Badge>
+                          </div>
+                        </TableCell>
+                        <TableCell className="hidden lg:table-cell">
+                          <Chip variant="flat" color="primary" size="sm">
+                            {product.category}
+                          </Chip>
+                        </TableCell>
+                        <TableCell>
+                          <Button
+                            size="sm"
+                            variant="danger"
+                            onClick={() => handleDeleteProduct(product.id)}
+                            className="text-xs"
+                          >
+                            Eliminar
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </div>
           </CardBody>
         </Card>
       )}
@@ -288,8 +315,12 @@ export default function ProductManager({
         icon={productIcon}
         maxWidth="max-w-4xl"
         footer={
-          <div className="flex justify-end gap-3">
-            <Button variant="secondary" onClick={() => setIsOpen(false)}>
+          <div className="flex flex-col sm:flex-row justify-end gap-3">
+            <Button
+              variant="secondary"
+              onClick={() => setIsOpen(false)}
+              className="w-full sm:w-auto"
+            >
               Cancelar
             </Button>
             <Button
@@ -299,6 +330,7 @@ export default function ProductManager({
                 !newProduct.purchasePrice ||
                 !newProduct.sellingPrice
               }
+              className="w-full sm:w-auto"
               startContent={
                 <svg
                   className="w-5 h-5"
@@ -315,12 +347,13 @@ export default function ProductManager({
                 </svg>
               }
             >
-              Agregar Producto
+              <span className="hidden sm:inline">Agregar Producto</span>
+              <span className="sm:hidden">Agregar</span>
             </Button>
           </div>
         }
       >
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormInput
             label="Nombre del Producto"
             placeholder="Ej: Camiseta"
