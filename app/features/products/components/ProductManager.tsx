@@ -242,7 +242,12 @@ export default function ProductManager({
                             {product.stock}
                           </span>
                           <Badge
-                            color={stockStatus.color as any}
+                            color={
+                              stockStatus.color as
+                                | "success"
+                                | "warning"
+                                | "danger"
+                            }
                             variant="flat"
                             size="sm"
                           >

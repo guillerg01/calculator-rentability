@@ -1,6 +1,7 @@
 "use client";
 
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 
 interface CustomModalProps {
   isOpen: boolean;
@@ -23,10 +24,16 @@ export default function CustomModal({
   footer,
   maxWidth = "max-w-lg",
 }: CustomModalProps) {
-  if (!isOpen) return null;
+  const [mounted, setMounted] = useState(false);
 
-  return (
-    <div className="modal-overlay bg-black/60 backdrop-blur-sm p-2 sm:p-4">
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!isOpen || !mounted) return null;
+
+  const modalContent = (
+    <div className="fixed inset-0 z-50 flex items-center justify-center modal-overlay bg-black/60 backdrop-blur-sm p-2 sm:p-4">
       <div
         className={`bg-white rounded-2xl shadow-2xl w-full max-w-[95vw] ${maxWidth} mx-2 sm:mx-4 transform transition-all duration-300 scale-100 max-h-[90vh] overflow-y-auto`}
       >
@@ -73,4 +80,6 @@ export default function CustomModal({
       </div>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 }
