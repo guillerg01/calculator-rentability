@@ -63,9 +63,8 @@ export default function DashboardPage() {
       />
 
       <DashboardLayout
-        activeTab={activeTab}
-        onTabChange={setActiveTab}
         business={currentBusiness}
+        onBusinessChange={() => loadBusinesses()}
       >
         {activeTab === "productos" && (
           <ProductManager
@@ -93,12 +92,7 @@ export default function DashboardPage() {
         )}
 
         {activeTab === "estadisticas" && (
-          <Statistics
-            businessId={currentBusiness.id}
-            sales={currentBusiness.sales}
-            expenses={currentBusiness.expenses}
-            products={currentBusiness.products}
-          />
+          <Statistics business={currentBusiness} />
         )}
       </DashboardLayout>
     </div>
