@@ -160,28 +160,50 @@ export default function Welcome({ onBusinessCreated }: WelcomeProps) {
           </div>
 
           {/* CTA Section */}
-          <div className="text-center">
-            <button
-              onClick={handleOpenModal}
-              className="bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold px-8 py-6 text-lg rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 flex items-center justify-center mx-auto focus:outline-none focus:ring-2 focus:ring-blue-500/30"
-            >
-              <svg
-                className="w-6 h-6 mr-2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+          <div className="text-center space-y-6">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <button
+                onClick={handleOpenModal}
+                className="bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold px-8 py-6 text-lg rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-blue-500/30"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                />
-              </svg>
-              Crear Mi Primer Negocio
-            </button>
+                <svg
+                  className="w-6 h-6 mr-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                  />
+                </svg>
+                Crear Mi Primer Negocio
+              </button>
 
-            <p className="text-gray-500 mt-6 text-lg">
+              <button
+                onClick={() => (window.location.href = "/calculadora-rapida")}
+                className="bg-gradient-to-r from-green-600 to-emerald-600 text-white font-semibold px-8 py-6 text-lg rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-green-500/30"
+              >
+                <svg
+                  className="w-6 h-6 mr-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+                  />
+                </svg>
+                Calculadora Rápida
+              </button>
+            </div>
+
+            <p className="text-gray-500 text-lg">
               Comienza tu viaje hacia el éxito empresarial en menos de 2 minutos
             </p>
           </div>
