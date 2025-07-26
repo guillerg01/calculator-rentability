@@ -1,17 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import {
-  Card,
-  CardHeader,
-  CardBody,
-  Button,
-  Input,
-  Select,
-  SelectItem,
-  Progress,
-  Chip,
-} from "@nextui-org/react";
+import { Card, CardHeader, CardBody, Progress, Chip } from "@nextui-org/react";
 import {
   LineChart,
   Line,
@@ -193,57 +183,70 @@ export default function Statistics({ business }: StatisticsProps) {
     totalRevenue > 0 ? (totalProfit / totalRevenue) * 100 : 0;
 
   return (
-    <div className="w-full">
+    <div className="w-full px-2 sm:px-0">
       {/* Header Section */}
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-col gap-4 mb-4 sm:mb-6">
         <div>
-          <h3 className="text-2xl font-bold text-gray-800">Estadísticas</h3>
-          <p className="text-gray-600 mt-1">
+          <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800">
+            Estadísticas
+          </h3>
+          <p className="text-xs sm:text-sm lg:text-base text-gray-600 mt-1">
             Análisis detallado del rendimiento del negocio
           </p>
         </div>
-        <div className="flex gap-3 items-center">
-          <Select
-            label="Período"
-            value={selectedPeriod}
-            onChange={(e) => setSelectedPeriod(e.target.value)}
-            className="w-40"
-            classNames={{
-              trigger:
-                "border-2 border-gray-200 hover:border-purple-400 focus-within:border-purple-500",
-            }}
-          >
-            <SelectItem key="7" value="7">
-              Últimos 7 días
-            </SelectItem>
-            <SelectItem key="30" value="30">
-              Últimos 30 días
-            </SelectItem>
-            <SelectItem key="90" value="90">
-              Últimos 90 días
-            </SelectItem>
-          </Select>
-          <Input
-            type="date"
-            label="Fecha final"
-            value={selectedDate}
-            onChange={(e) => setSelectedDate(e.target.value)}
-            className="w-40"
-            classNames={{
-              inputWrapper:
-                "border-2 border-gray-200 hover:border-purple-400 focus-within:border-purple-500",
-            }}
-          />
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1 sm:mb-2">
+              Período
+            </label>
+            <div className="relative">
+              <select
+                value={selectedPeriod}
+                onChange={(e) => setSelectedPeriod(e.target.value)}
+                className="w-full px-3 py-2 sm:px-4 sm:py-3 border-2 border-gray-200 rounded-xl sm:rounded-2xl focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-200 text-xs sm:text-sm lg:text-base appearance-none bg-white shadow-sm hover:shadow-md"
+              >
+                <option value="7">Últimos 7 días</option>
+                <option value="30">Últimos 30 días</option>
+                <option value="90">Últimos 90 días</option>
+              </select>
+              <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                <svg
+                  className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div>
+            <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1 sm:mb-2">
+              Fecha final
+            </label>
+            <input
+              type="date"
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
+              className="w-full px-3 py-2 sm:px-4 sm:py-3 border-2 border-gray-200 rounded-xl sm:rounded-2xl focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-200 text-xs sm:text-sm lg:text-base shadow-sm hover:shadow-md"
+            />
+          </div>
         </div>
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-blue-50 rounded-xl p-6 border border-blue-100">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 lg:gap-4 mb-4 sm:mb-6">
+        <div className="bg-blue-50 rounded-lg sm:rounded-xl p-3 sm:p-4 lg:p-6 border border-blue-100 shadow-sm hover:shadow-md transition-shadow duration-200">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-blue-500 rounded-lg flex items-center justify-center shadow-sm flex-shrink-0">
               <svg
-                className="w-6 h-6 text-white"
+                className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-white"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -256,22 +259,22 @@ export default function Statistics({ business }: StatisticsProps) {
                 />
               </svg>
             </div>
-            <div>
-              <p className="text-sm text-blue-600 font-medium">
+            <div className="min-w-0 flex-1">
+              <p className="text-xs sm:text-sm text-blue-600 font-medium truncate">
                 Ingresos Totales
               </p>
-              <p className="text-2xl font-bold text-blue-800">
+              <p className="text-sm sm:text-lg lg:text-2xl font-bold text-blue-800 truncate">
                 {StorageService.formatCurrency(totalRevenue)}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="bg-red-50 rounded-xl p-6 border border-red-100">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-red-500 rounded-lg flex items-center justify-center">
+        <div className="bg-red-50 rounded-lg sm:rounded-xl p-3 sm:p-4 lg:p-6 border border-red-100 shadow-sm hover:shadow-md transition-shadow duration-200">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-red-500 rounded-lg flex items-center justify-center shadow-sm flex-shrink-0">
               <svg
-                className="w-6 h-6 text-white"
+                className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-white"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -284,20 +287,22 @@ export default function Statistics({ business }: StatisticsProps) {
                 />
               </svg>
             </div>
-            <div>
-              <p className="text-sm text-red-600 font-medium">Gastos Totales</p>
-              <p className="text-2xl font-bold text-red-800">
+            <div className="min-w-0 flex-1">
+              <p className="text-xs sm:text-sm text-red-600 font-medium truncate">
+                Gastos Totales
+              </p>
+              <p className="text-sm sm:text-lg lg:text-2xl font-bold text-red-800 truncate">
                 {StorageService.formatCurrency(totalExpenses)}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="bg-green-50 rounded-xl p-6 border border-green-100">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center">
+        <div className="bg-green-50 rounded-lg sm:rounded-xl p-3 sm:p-4 lg:p-6 border border-green-100 shadow-sm hover:shadow-md transition-shadow duration-200">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-green-500 rounded-lg flex items-center justify-center shadow-sm flex-shrink-0">
               <svg
-                className="w-6 h-6 text-white"
+                className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-white"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -310,22 +315,22 @@ export default function Statistics({ business }: StatisticsProps) {
                 />
               </svg>
             </div>
-            <div>
-              <p className="text-sm text-green-600 font-medium">
+            <div className="min-w-0 flex-1">
+              <p className="text-xs sm:text-sm text-green-600 font-medium truncate">
                 Beneficio Neto
               </p>
-              <p className="text-2xl font-bold text-green-800">
+              <p className="text-sm sm:text-lg lg:text-2xl font-bold text-green-800 truncate">
                 {StorageService.formatCurrency(totalProfit)}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="bg-purple-50 rounded-xl p-6 border border-purple-100">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center">
+        <div className="bg-purple-50 rounded-lg sm:rounded-xl p-3 sm:p-4 lg:p-6 border border-purple-100 shadow-sm hover:shadow-md transition-shadow duration-200">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-purple-500 rounded-lg flex items-center justify-center shadow-sm flex-shrink-0">
               <svg
-                className="w-6 h-6 text-white"
+                className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-white"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -338,11 +343,11 @@ export default function Statistics({ business }: StatisticsProps) {
                 />
               </svg>
             </div>
-            <div>
-              <p className="text-sm text-purple-600 font-medium">
+            <div className="min-w-0 flex-1">
+              <p className="text-xs sm:text-sm text-purple-600 font-medium truncate">
                 Margen de Beneficio
               </p>
-              <p className="text-2xl font-bold text-purple-800">
+              <p className="text-sm sm:text-lg lg:text-2xl font-bold text-purple-800 truncate">
                 {overallProfitMargin.toFixed(1)}%
               </p>
             </div>
@@ -351,16 +356,16 @@ export default function Statistics({ business }: StatisticsProps) {
       </div>
 
       {/* Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-3 sm:gap-4 xl:gap-6 mb-4 sm:mb-6">
         {/* Revenue vs Expenses Chart */}
-        <Card className="bg-white/50 backdrop-blur-sm border border-white/20 shadow-lg">
+        <Card className="bg-white/80 backdrop-blur-sm border border-white/30 shadow-lg hover:shadow-xl transition-shadow duration-200">
           <CardHeader className="pb-3">
-            <h3 className="text-lg font-semibold text-gray-800">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-800">
               Ingresos vs Gastos
             </h3>
           </CardHeader>
           <CardBody>
-            <ResponsiveContainer width="100%" height={300}>
+            <ResponsiveContainer width="100%" height={250}>
               <LineChart data={dailyStats}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis
@@ -397,14 +402,14 @@ export default function Statistics({ business }: StatisticsProps) {
         </Card>
 
         {/* Profit Chart */}
-        <Card className="bg-white/50 backdrop-blur-sm border border-white/20 shadow-lg">
+        <Card className="bg-white/80 backdrop-blur-sm border border-white/30 shadow-lg hover:shadow-xl transition-shadow duration-200">
           <CardHeader className="pb-3">
-            <h3 className="text-lg font-semibold text-gray-800">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-800">
               Beneficio Diario
             </h3>
           </CardHeader>
           <CardBody>
-            <ResponsiveContainer width="100%" height={300}>
+            <ResponsiveContainer width="100%" height={250}>
               <BarChart data={dailyStats}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis
@@ -428,9 +433,9 @@ export default function Statistics({ business }: StatisticsProps) {
         </Card>
 
         {/* Top Products */}
-        <Card className="bg-white/50 backdrop-blur-sm border border-white/20 shadow-lg">
+        <Card className="bg-white/80 backdrop-blur-sm border border-white/30 shadow-lg hover:shadow-xl transition-shadow duration-200">
           <CardHeader className="pb-3">
-            <h3 className="text-lg font-semibold text-gray-800">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-800">
               Productos Más Vendidos
             </h3>
           </CardHeader>
@@ -480,14 +485,14 @@ export default function Statistics({ business }: StatisticsProps) {
         </Card>
 
         {/* Expense Breakdown */}
-        <Card className="bg-white/50 backdrop-blur-sm border border-white/20 shadow-lg">
+        <Card className="bg-white/80 backdrop-blur-sm border border-white/30 shadow-lg hover:shadow-xl transition-shadow duration-200">
           <CardHeader className="pb-3">
-            <h3 className="text-lg font-semibold text-gray-800">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-800">
               Desglose de Gastos
             </h3>
           </CardHeader>
           <CardBody>
-            <ResponsiveContainer width="100%" height={300}>
+            <ResponsiveContainer width="100%" height={250}>
               <PieChart>
                 <Pie
                   data={expenseBreakdown}
@@ -521,9 +526,9 @@ export default function Statistics({ business }: StatisticsProps) {
       </div>
 
       {/* Profit Margin Progress */}
-      <Card className="bg-white/50 backdrop-blur-sm border border-white/20 shadow-lg">
+      <Card className="bg-white/80 backdrop-blur-sm border border-white/30 shadow-lg hover:shadow-xl transition-shadow duration-200">
         <CardHeader className="pb-3">
-          <h3 className="text-lg font-semibold text-gray-800">
+          <h3 className="text-base sm:text-lg font-semibold text-gray-800">
             Margen de Beneficio por Producto
           </h3>
         </CardHeader>
