@@ -1,9 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { Card, CardBody, Button, useDisclosure } from "@nextui-org/react";
+import { Card, CardBody, Button } from "@nextui-org/react";
 import { Business } from "../types";
 import { StorageService } from "../services/storage";
+import CustomModal from "./ui/CustomModal";
+import FormInput from "./ui/FormInput";
+import FormTextarea from "./ui/FormTextarea";
 
 interface WelcomeProps {
   onBusinessCreated: (business: Business) => void;
@@ -12,11 +15,11 @@ interface WelcomeProps {
 export default function Welcome({ onBusinessCreated }: WelcomeProps) {
   console.log("Welcome component rendered");
   const [newBusiness, setNewBusiness] = useState({ name: "", description: "" });
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleOpenModal = () => {
     console.log("handleOpenModal called");
-    onOpen();
+    setIsOpen(true);
   };
 
   const handleCreateBusiness = () => {
@@ -35,7 +38,7 @@ export default function Welcome({ onBusinessCreated }: WelcomeProps) {
       console.log("Creating business:", business);
       StorageService.addBusiness(business);
       setNewBusiness({ name: "", description: "" });
-      onClose();
+      setIsOpen(false);
       onBusinessCreated(business);
       StorageService.setCurrentBusinessId(business.id);
     }
@@ -186,168 +189,120 @@ export default function Welcome({ onBusinessCreated }: WelcomeProps) {
       </div>
 
       {/* Custom Modal */}
-      {isOpen && (
-        <div className="modal-overlay bg-black/60 backdrop-blur-sm p-2 sm:p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-[95vw] max-w-lg mx-2 sm:mx-4 transform transition-all duration-300 scale-100 max-h-[90vh] overflow-y-auto">
-            {/* Header */}
-            <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-t-2xl p-4 sm:p-6 text-white">
-              <div className="flex justify-between items-center">
-                <div className="flex items-center gap-2 sm:gap-3">
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-white/20 rounded-xl flex items-center justify-center">
-                    <svg
-                      className="w-6 h-6"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                      />
-                    </svg>
-                  </div>
-                  <div>
-                    <h2 className="text-lg sm:text-xl font-bold">
-                      Crear Nuevo Negocio
-                    </h2>
-                    <p className="text-blue-100 text-xs sm:text-sm">
-                      Comienza tu viaje empresarial
-                    </p>
-                  </div>
-                </div>
-                <button
-                  onClick={onClose}
-                  className="w-6 h-6 sm:w-8 sm:h-8 bg-white/20 rounded-2xl flex items-center justify-center hover:bg-white/30 transition-colors focus:outline-none focus:ring-2 focus:ring-white/30"
-                >
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </button>
-              </div>
-            </div>
-
-            {/* Body */}
-            <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-3">
-                  Nombre del Negocio
-                </label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    placeholder="Ej: Mi Tienda Online"
-                    value={newBusiness.name}
-                    onChange={(e) =>
-                      setNewBusiness({ ...newBusiness, name: e.target.value })
-                    }
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-2xl focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 text-lg"
-                  />
-                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                    <svg
-                      className="w-5 h-5 text-gray-400"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                      />
-                    </svg>
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-3">
-                  Descripción (Opcional)
-                </label>
-                <textarea
-                  placeholder="Describe tu negocio, productos principales, mercado objetivo..."
-                  value={newBusiness.description}
-                  onChange={(e) =>
-                    setNewBusiness({
-                      ...newBusiness,
-                      description: e.target.value,
-                    })
-                  }
-                  rows={4}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-2xl focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 resize-none"
+      <CustomModal
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        title="Crear Nuevo Negocio"
+        subtitle="Comienza tu viaje empresarial"
+        icon={
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+            />
+          </svg>
+        }
+        maxWidth="max-w-lg"
+        footer={
+          <div className="flex flex-col sm:flex-row justify-end gap-3">
+            <button
+              onClick={() => setIsOpen(false)}
+              className="px-6 py-3 text-gray-600 hover:text-gray-800 font-medium rounded-2xl hover:bg-gray-100 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-200 w-full sm:w-auto"
+            >
+              Cancelar
+            </button>
+            <button
+              onClick={handleCreateBusiness}
+              disabled={!newBusiness.name.trim()}
+              className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-2xl hover:from-blue-700 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-blue-500/30 w-full sm:w-auto"
+            >
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 13l4 4L19 7"
                 />
-              </div>
-
-              {/* Preview */}
-              {newBusiness.name && (
-                <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-4 border border-blue-100">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
-                      <span className="text-white font-bold text-lg">
-                        {newBusiness.name.charAt(0).toUpperCase()}
-                      </span>
-                    </div>
-                    <div>
-                      <p className="font-semibold text-gray-800">
-                        {newBusiness.name}
-                      </p>
-                      {newBusiness.description && (
-                        <p className="text-sm text-gray-600">
-                          {newBusiness.description}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Footer */}
-            <div className="bg-gray-50 rounded-b-2xl p-4 sm:p-6 border-t border-gray-100">
-              <div className="flex justify-end gap-3">
-                <button
-                  onClick={onClose}
-                  className="px-6 py-3 text-gray-600 hover:text-gray-800 font-medium rounded-2xl hover:bg-gray-100 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-200"
-                >
-                  Cancelar
-                </button>
-                <button
-                  onClick={handleCreateBusiness}
-                  disabled={!newBusiness.name.trim()}
-                  className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-2xl hover:from-blue-700 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
-                >
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
-                  Crear Negocio
-                </button>
-              </div>
-            </div>
+              </svg>
+              Crear Negocio
+            </button>
           </div>
+        }
+      >
+        <div className="space-y-4 sm:space-y-6">
+          <FormInput
+            label="Nombre del Negocio"
+            placeholder="Ej: Mi Tienda Online"
+            value={newBusiness.name}
+            onChange={(e) =>
+              setNewBusiness({ ...newBusiness, name: e.target.value })
+            }
+            icon={
+              <svg
+                className="w-5 h-5 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                />
+              </svg>
+            }
+            required
+          />
+
+          <FormTextarea
+            label="Descripción (Opcional)"
+            placeholder="Describe tu negocio, productos principales, mercado objetivo..."
+            value={newBusiness.description}
+            onChange={(e) =>
+              setNewBusiness({
+                ...newBusiness,
+                description: e.target.value,
+              })
+            }
+          />
+
+          {/* Preview */}
+          {newBusiness.name && (
+            <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-4 border border-blue-100">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+                  <span className="text-white font-bold text-lg">
+                    {newBusiness.name.charAt(0).toUpperCase()}
+                  </span>
+                </div>
+                <div>
+                  <p className="font-semibold text-gray-800">
+                    {newBusiness.name}
+                  </p>
+                  {newBusiness.description && (
+                    <p className="text-sm text-gray-600">
+                      {newBusiness.description}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
-      )}
+      </CustomModal>
     </div>
   );
 }

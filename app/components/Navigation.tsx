@@ -11,17 +11,12 @@ import {
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  useDisclosure,
-  Input,
-  Textarea,
 } from "@nextui-org/react";
 import { Business } from "../types";
 import { StorageService } from "../services/storage";
+import CustomModal from "./ui/CustomModal";
+import FormInput from "./ui/FormInput";
+import FormTextarea from "./ui/FormTextarea";
 
 interface NavigationProps {
   currentBusiness: Business | null;
@@ -34,7 +29,7 @@ export default function Navigation({
 }: NavigationProps) {
   const [businesses, setBusinesses] = useState<Business[]>([]);
   const [newBusiness, setNewBusiness] = useState({ name: "", description: "" });
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     loadBusinesses();
@@ -71,7 +66,7 @@ export default function Navigation({
 
       StorageService.addBusiness(business);
       setNewBusiness({ name: "", description: "" });
-      onClose();
+      setIsOpen(false);
       loadBusinesses();
       onBusinessChange(business);
       StorageService.setCurrentBusinessId(business.id);
@@ -176,7 +171,7 @@ export default function Navigation({
               ))}
               <DropdownItem
                 key="new"
-                onPress={onOpen}
+                onPress={() => setIsOpen(true)}
                 className="text-blue-600 font-semibold"
               >
                 <div className="flex items-center gap-2">
@@ -207,7 +202,7 @@ export default function Navigation({
             color="primary"
             variant="flat"
             className="bg-gradient-to-r from-blue-600 to-purple-600 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300"
-            onPress={onOpen}
+            onPress={() => setIsOpen(true)}
             startContent={
               <svg
                 className="w-4 h-4"
@@ -229,79 +224,120 @@ export default function Navigation({
         </NavbarItem>
       </NavbarContent>
 
-      <Modal
+      <CustomModal
         isOpen={isOpen}
-        onClose={onClose}
-        size="2xl"
-        classNames={{
-          backdrop: "bg-black/50 backdrop-blur-sm",
-          base: "border-0 shadow-2xl",
-          header:
-            "border-b border-gray-200 bg-gradient-to-r from-blue-50 to-purple-50",
-          body: "py-6",
-          footer:
-            "border-t border-gray-200 bg-gradient-to-r from-blue-50 to-purple-50",
-        }}
-      >
-        <ModalContent>
-          <ModalHeader className="text-2xl font-bold text-gray-800">
-            Crear Nuevo Negocio
-          </ModalHeader>
-          <ModalBody>
-            <div className="space-y-6">
-              <Input
-                label="Nombre del Negocio"
-                placeholder="Ej: Mi Tienda Online"
-                value={newBusiness.name}
-                onChange={(e) =>
-                  setNewBusiness({ ...newBusiness, name: e.target.value })
-                }
-                classNames={{
-                  label: "text-gray-700 font-medium",
-                  input: "text-lg",
-                  inputWrapper:
-                    "border-2 border-gray-200 hover:border-blue-400 focus-within:border-blue-500",
-                }}
-              />
-              <Textarea
-                label="Descripción"
-                placeholder="Describe tu negocio, productos principales, mercado objetivo..."
-                value={newBusiness.description}
-                onChange={(e) =>
-                  setNewBusiness({
-                    ...newBusiness,
-                    description: e.target.value,
-                  })
-                }
-                classNames={{
-                  label: "text-gray-700 font-medium",
-                  input: "text-base",
-                  inputWrapper:
-                    "border-2 border-gray-200 hover:border-blue-400 focus-within:border-blue-500",
-                }}
-              />
-            </div>
-          </ModalBody>
-          <ModalFooter>
-            <Button
-              color="danger"
-              variant="light"
-              onPress={onClose}
-              className="font-medium"
+        onClose={() => setIsOpen(false)}
+        title="Crear Nuevo Negocio"
+        subtitle="Comienza tu viaje empresarial"
+        icon={
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+            />
+          </svg>
+        }
+        maxWidth="max-w-2xl"
+        footer={
+          <div className="flex flex-col sm:flex-row justify-end gap-3">
+            <button
+              onClick={() => setIsOpen(false)}
+              className="px-6 py-3 text-gray-600 hover:text-gray-800 font-medium rounded-2xl hover:bg-gray-100 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-200 w-full sm:w-auto"
             >
               Cancelar
-            </Button>
-            <Button
-              color="primary"
-              onPress={handleCreateBusiness}
-              isDisabled={!newBusiness.name.trim()}
-              className="bg-gradient-to-r from-blue-600 to-purple-600 font-medium px-6"
+            </button>
+            <button
+              onClick={handleCreateBusiness}
+              disabled={!newBusiness.name.trim()}
+              className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-2xl hover:from-blue-700 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-blue-500/30 w-full sm:w-auto"
             >
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
               Crear Negocio
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+            </button>
+          </div>
+        }
+      >
+        <div className="space-y-6">
+          <FormInput
+            label="Nombre del Negocio"
+            placeholder="Ej: Mi Tienda Online"
+            value={newBusiness.name}
+            onChange={(e) =>
+              setNewBusiness({ ...newBusiness, name: e.target.value })
+            }
+            icon={
+              <svg
+                className="w-5 h-5 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                />
+              </svg>
+            }
+            required
+          />
+
+          <FormTextarea
+            label="Descripción"
+            placeholder="Describe tu negocio, productos principales, mercado objetivo..."
+            value={newBusiness.description}
+            onChange={(e) =>
+              setNewBusiness({
+                ...newBusiness,
+                description: e.target.value,
+              })
+            }
+          />
+
+          {/* Preview */}
+          {newBusiness.name && (
+            <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-4 border border-blue-100">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+                  <span className="text-white font-bold text-lg">
+                    {newBusiness.name.charAt(0).toUpperCase()}
+                  </span>
+                </div>
+                <div>
+                  <p className="font-semibold text-gray-800">
+                    {newBusiness.name}
+                  </p>
+                  {newBusiness.description && (
+                    <p className="text-sm text-gray-600">
+                      {newBusiness.description}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </CustomModal>
     </Navbar>
   );
 }
