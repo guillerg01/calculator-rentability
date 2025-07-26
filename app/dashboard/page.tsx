@@ -13,7 +13,6 @@ import Welcome from "../components/Welcome";
 
 export default function DashboardPage() {
   const [currentBusiness, setCurrentBusiness] = useState<Business | null>(null);
-  const [activeTab, setActiveTab] = useState("productos");
 
   useEffect(() => {
     const businesses = StorageService.getBusinesses();
@@ -65,36 +64,32 @@ export default function DashboardPage() {
       <DashboardLayout
         business={currentBusiness}
         onBusinessChange={() => loadBusinesses()}
-      >
-        {activeTab === "productos" && (
-          <ProductManager
-            businessId={currentBusiness.id}
-            products={currentBusiness.products}
-            onProductsChange={loadBusinesses}
-          />
-        )}
-
-        {activeTab === "ventas" && (
-          <SalesManager
-            businessId={currentBusiness.id}
-            sales={currentBusiness.sales}
-            products={currentBusiness.products}
-            onSalesChange={loadBusinesses}
-          />
-        )}
-
-        {activeTab === "gastos" && (
-          <ExpenseManager
-            businessId={currentBusiness.id}
-            expenses={currentBusiness.expenses}
-            onExpensesChange={loadBusinesses}
-          />
-        )}
-
-        {activeTab === "estadisticas" && (
-          <Statistics business={currentBusiness} />
-        )}
-      </DashboardLayout>
+        children={{
+          productos: (
+            <ProductManager
+              businessId={currentBusiness.id}
+              products={currentBusiness.products}
+              onProductsChange={loadBusinesses}
+            />
+          ),
+          ventas: (
+            <SalesManager
+              businessId={currentBusiness.id}
+              sales={currentBusiness.sales}
+              products={currentBusiness.products}
+              onSalesChange={loadBusinesses}
+            />
+          ),
+          gastos: (
+            <ExpenseManager
+              businessId={currentBusiness.id}
+              expenses={currentBusiness.expenses}
+              onExpensesChange={loadBusinesses}
+            />
+          ),
+          estadisticas: <Statistics business={currentBusiness} />,
+        }}
+      />
     </div>
   );
 }

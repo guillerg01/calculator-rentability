@@ -1,12 +1,17 @@
 "use client";
 
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import { Business } from "../../types";
 
 interface DashboardLayoutProps {
   business: Business;
-  children: ReactNode;
   onBusinessChange: () => void;
+  children: {
+    productos: ReactNode;
+    ventas: ReactNode;
+    gastos: ReactNode;
+    estadisticas: ReactNode;
+  };
 }
 
 export default function DashboardLayout({
@@ -14,6 +19,7 @@ export default function DashboardLayout({
   children,
   onBusinessChange,
 }: DashboardLayoutProps) {
+  const [activeTab, setActiveTab] = useState("productos");
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-100 relative">
       <div className="container mx-auto px-4 py-8 max-w-7xl relative">
@@ -188,8 +194,133 @@ export default function DashboardLayout({
           </div>
         </div>
 
+        {/* Navigation Tabs */}
+        <div className="mb-6">
+          <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-2 shadow-lg border border-white/20">
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={() => setActiveTab("productos")}
+                className={`px-6 py-3 rounded-xl font-medium transition-all duration-200 flex items-center gap-2 ${
+                  activeTab === "productos"
+                    ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg"
+                    : "text-gray-600 hover:text-gray-800 hover:bg-gray-100"
+                }`}
+              >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+                  />
+                </svg>
+                Productos
+              </button>
+
+              <button
+                onClick={() => setActiveTab("ventas")}
+                className={`px-6 py-3 rounded-xl font-medium transition-all duration-200 flex items-center gap-2 ${
+                  activeTab === "ventas"
+                    ? "bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-lg"
+                    : "text-gray-600 hover:text-gray-800 hover:bg-gray-100"
+                }`}
+              >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"
+                  />
+                </svg>
+                Ventas
+              </button>
+
+              <button
+                onClick={() => setActiveTab("gastos")}
+                className={`px-6 py-3 rounded-xl font-medium transition-all duration-200 flex items-center gap-2 ${
+                  activeTab === "gastos"
+                    ? "bg-gradient-to-r from-red-500 to-pink-600 text-white shadow-lg"
+                    : "text-gray-600 hover:text-gray-800 hover:bg-gray-100"
+                }`}
+              >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"
+                  />
+                </svg>
+                Gastos
+              </button>
+
+              <button
+                onClick={() => setActiveTab("estadisticas")}
+                className={`px-6 py-3 rounded-xl font-medium transition-all duration-200 flex items-center gap-2 ${
+                  activeTab === "estadisticas"
+                    ? "bg-gradient-to-r from-purple-500 to-indigo-600 text-white shadow-lg"
+                    : "text-gray-600 hover:text-gray-800 hover:bg-gray-100"
+                }`}
+              >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                  />
+                </svg>
+                Estadísticas
+              </button>
+            </div>
+          </div>
+        </div>
+
         {/* Content Section */}
-        {children}
+        {activeTab === "productos" && (
+          <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-white/20">
+            {children.productos}
+          </div>
+        )}
+
+        {activeTab === "ventas" && (
+          <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-white/20">
+            {children.ventas}
+          </div>
+        )}
+
+        {activeTab === "gastos" && (
+          <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-white/20">
+            {children.gastos}
+          </div>
+        )}
+
+        {activeTab === "estadisticas" && (
+          <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-white/20">
+            {children.estadisticas}
+          </div>
+        )}
       </div>
     </div>
   );
