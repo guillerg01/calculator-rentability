@@ -52,7 +52,11 @@ export class StorageService {
 
   static setCurrentBusinessId(businessId: string): void {
     if (typeof window === "undefined") return;
-    localStorage.setItem(STORAGE_KEYS.CURRENT_BUSINESS, businessId);
+    if (businessId) {
+      localStorage.setItem(STORAGE_KEYS.CURRENT_BUSINESS, businessId);
+    } else {
+      localStorage.removeItem(STORAGE_KEYS.CURRENT_BUSINESS);
+    }
   }
 
   // Product management

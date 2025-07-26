@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardBody, Button } from "@nextui-org/react";
 import { Business } from "../types";
 import { StorageService } from "../services/storage";
@@ -16,6 +16,13 @@ export default function Welcome({ onBusinessCreated }: WelcomeProps) {
   console.log("Welcome component rendered");
   const [newBusiness, setNewBusiness] = useState({ name: "", description: "" });
   const [isOpen, setIsOpen] = useState(false);
+  const [existingBusinesses, setExistingBusinesses] = useState<Business[]>([]);
+
+  // Load businesses on client side to avoid hydration mismatch
+  useEffect(() => {
+    const businesses = StorageService.getBusinesses();
+    setExistingBusinesses(businesses);
+  }, []);
 
   const handleOpenModal = () => {
     console.log("handleOpenModal called");
@@ -39,6 +46,11 @@ export default function Welcome({ onBusinessCreated }: WelcomeProps) {
       StorageService.addBusiness(business);
       setNewBusiness({ name: "", description: "" });
       setIsOpen(false);
+
+      // Update the existing businesses list
+      const updatedBusinesses = StorageService.getBusinesses();
+      setExistingBusinesses(updatedBusinesses);
+
       onBusinessCreated(business);
       StorageService.setCurrentBusinessId(business.id);
     }
@@ -98,15 +110,15 @@ export default function Welcome({ onBusinessCreated }: WelcomeProps) {
                   Gestión de Productos
                 </h3>
                 <p className="text-gray-600 leading-relaxed">
-                  Controla inventario, precios de compra y venta, categorías y
-                  alertas de stock bajo con precisión
+                  Administra tu inventario, precios de compra y venta, stock
+                  mínimo y categorías de productos de forma eficiente
                 </p>
               </div>
             </div>
 
             <div className="group">
               <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-white/20 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
-                <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                   <svg
                     className="w-8 h-8 text-white"
                     fill="none"
@@ -125,15 +137,15 @@ export default function Welcome({ onBusinessCreated }: WelcomeProps) {
                   Control de Ventas
                 </h3>
                 <p className="text-gray-600 leading-relaxed">
-                  Registra ventas diarias, gestiona clientes y obtén insights en
-                  tiempo real sobre tu rendimiento
+                  Registra ventas, calcula márgenes de beneficio y analiza el
+                  rendimiento de tus productos en tiempo real
                 </p>
               </div>
             </div>
 
             <div className="group">
               <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-white/20 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
-                <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                   <svg
                     className="w-8 h-8 text-white"
                     fill="none"
@@ -162,6 +174,34 @@ export default function Welcome({ onBusinessCreated }: WelcomeProps) {
           {/* CTA Section */}
           <div className="text-center space-y-6">
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              {existingBusinesses.length > 0 && (
+                <button
+                  onClick={() => (window.location.href = "/dashboard")}
+                  className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold px-8 py-6 text-lg rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-indigo-500/30"
+                >
+                  <svg
+                    className="w-6 h-6 mr-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M8 5a2 2 0 012-2h4a2 2 0 012 2v6H8V5z"
+                    />
+                  </svg>
+                  Ir al Dashboard
+                </button>
+              )}
+
               <button
                 onClick={handleOpenModal}
                 className="bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold px-8 py-6 text-lg rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-blue-500/30"
@@ -179,7 +219,9 @@ export default function Welcome({ onBusinessCreated }: WelcomeProps) {
                     d="M12 6v6m0 0v6m0-6h6m-6 0H6"
                   />
                 </svg>
-                Crear Mi Primer Negocio
+                {existingBusinesses.length > 0
+                  ? "Crear Otro Negocio"
+                  : "Crear Mi Primer Negocio"}
               </button>
 
               <button
@@ -204,7 +246,9 @@ export default function Welcome({ onBusinessCreated }: WelcomeProps) {
             </div>
 
             <p className="text-gray-500 text-lg">
-              Comienza tu viaje hacia el éxito empresarial en menos de 2 minutos
+              {existingBusinesses.length > 0
+                ? "Gestiona tus negocios existentes o crea uno nuevo"
+                : "Comienza tu viaje hacia el éxito empresarial en menos de 2 minutos"}
             </p>
           </div>
         </div>

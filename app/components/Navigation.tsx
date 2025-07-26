@@ -82,13 +82,13 @@ export default function Navigation({
     <Navbar
       className="bg-gradient-to-r from-slate-900 via-purple-900 to-slate-900 border-b border-white/10 shadow-2xl"
       maxWidth="full"
-      height="4rem"
+      height="auto"
     >
-      <NavbarBrand className="gap-3">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+      <NavbarBrand className="gap-2 sm:gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg flex-shrink-0">
             <svg
-              className="w-6 h-6 text-white"
+              className="w-4 h-4 sm:w-6 sm:h-6 text-white"
               fill="currentColor"
               viewBox="0 0 20 20"
             >
@@ -100,11 +100,11 @@ export default function Navigation({
               />
             </svg>
           </div>
-          <div>
-            <p className="font-bold text-white text-xl">
+          <div className="min-w-0 flex-1">
+            <p className="font-bold text-white text-sm sm:text-xl truncate">
               Calculadora de Rentabilidad
             </p>
-            <p className="text-xs text-gray-300">
+            <p className="text-xs text-gray-300 hidden sm:block">
               Gestión Empresarial Inteligente
             </p>
           </div>
@@ -142,30 +142,80 @@ export default function Navigation({
       <NavbarContent justify="center" className="hidden sm:flex">
         <NavbarItem>
           <div className="relative">
-            <Button
-              variant="flat"
-              className="bg-white/10 text-white border-white/20 hover:bg-white/20 backdrop-blur-sm"
-              onPress={() => setIsOpen(true)}
-            >
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                {currentBusiness ? currentBusiness.name : "Seleccionar Negocio"}
-              </div>
-            </Button>
+            <div className="relative">
+              <select
+                value={currentBusiness?.id || ""}
+                onChange={(e) => {
+                  if (e.target.value === "new") {
+                    setIsOpen(true);
+                  } else {
+                    const business = businesses.find(
+                      (b) => b.id === e.target.value
+                    );
+                    if (business) {
+                      handleBusinessSelect(business);
+                    }
+                  }
+                }}
+                className="bg-white/10 text-white border border-white/20 hover:bg-white/20 backdrop-blur-sm rounded-lg pl-8 pr-10 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-white/30 transition-all duration-200 appearance-none cursor-pointer min-w-32 max-w-48 font-medium"
+                style={{
+                  backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")`,
+                  backgroundPosition: "right 0.75rem center",
+                  backgroundRepeat: "no-repeat",
+                  backgroundSize: "1.25em 1.25em",
+                }}
+              >
+                {businesses.length === 0 ? (
+                  <option value="" disabled className="text-gray-500 bg-white">
+                    Seleccionar Negocio
+                  </option>
+                ) : (
+                  <>
+                    <option
+                      value=""
+                      disabled
+                      className="text-gray-500 bg-white"
+                    >
+                      Seleccionar Negocio
+                    </option>
+                    {businesses.map((business) => (
+                      <option
+                        key={business.id}
+                        value={business.id}
+                        className="text-gray-800 bg-white font-medium"
+                      >
+                        {business.name}
+                      </option>
+                    ))}
+                    <option
+                      value="new"
+                      className="text-blue-600 font-semibold bg-white"
+                    >
+                      + Crear Nuevo Negocio
+                    </option>
+                  </>
+                )}
+              </select>
+              {currentBusiness && (
+                <div className="absolute left-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                  <div className="w-2 h-2 bg-green-400 rounded-full shadow-sm"></div>
+                </div>
+              )}
+            </div>
           </div>
         </NavbarItem>
       </NavbarContent>
 
-      <NavbarContent justify="end">
+      <NavbarContent justify="end" className="flex-shrink-0">
         <NavbarItem>
           <Button
             color="primary"
             variant="flat"
-            className="bg-gradient-to-r from-blue-600 to-purple-600 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300"
+            className="bg-gradient-to-r from-blue-600 to-purple-600 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 text-xs sm:text-sm px-2 sm:px-4 py-2 sm:py-3 min-w-0"
             onPress={() => setIsOpen(true)}
             startContent={
               <svg
-                className="w-4 h-4"
+                className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -179,7 +229,8 @@ export default function Navigation({
               </svg>
             }
           >
-            Nuevo Negocio
+            <span className="hidden sm:inline">Nuevo Negocio</span>
+            <span className="sm:hidden">+</span>
           </Button>
         </NavbarItem>
       </NavbarContent>

@@ -1,28 +1,25 @@
 "use client";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { StorageService } from "./services/storage";
 import Welcome from "./components/Welcome";
 
 export default function Home() {
-  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const businesses = StorageService.getBusinesses();
-    const currentId = StorageService.getCurrentBusinessId();
+  // // Show loading or welcome page
+  // if (isLoading) {
+  //   return (
+  //     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center">
+  //       <div className="text-center">
+  //         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+  //         <p className="text-gray-600">Cargando...</p>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
-    if (currentId && businesses.length > 0) {
-      // If there's a current business, redirect to dashboard
-      router.push("/dashboard");
-    } else if (businesses.length > 0) {
-      // If there are businesses but no current one, set the first one and redirect
-      StorageService.setCurrentBusinessId(businesses[0].id);
-      router.push("/dashboard");
-    }
-    // If no businesses exist, stay on welcome page
-  }, [router]);
-
-  // Show welcome page
-  return <Welcome onBusinessCreated={() => router.push("/dashboard")} />;
+  return (
+    <Welcome onBusinessCreated={() => (window.location.href = "/dashboard")} />
+  );
 }
